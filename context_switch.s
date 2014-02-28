@@ -17,8 +17,7 @@ USART2_IRQHandler:
 	stmdb r0!, {r4, r5, r6, r7, r8, r9, r10, r11, lr}
 
 	/* load kernel state */
-	pop {r4, r5, r6, r7, r8, r9, r10, r11, ip, lr}
-	msr psr, ip
+	pop {r4, r5, r6, r7, r8, r9, r10, r11, lr}
 
 	bx lr
 
@@ -31,16 +30,14 @@ SVC_Handler:
 	stmdb r0!, {r4, r5, r6, r7, r8, r9, r10, r11, lr}
 
 	/* load kernel state */
-	pop {r4, r5, r6, r7, r8, r9, r10, r11, ip, lr}
-	/*msr psr, ip*/
+	pop {r4, r5, r6, r7, r8, r9, r10, r11, lr}
 	
 	bx lr
 
 	.global activate
 activate:
 	/* save kernel state */
-	mrs ip, psr
-	push {r4, r5, r6, r7, r8, r9, r10, r11, ip, lr}
+	push {r4, r5, r6, r7, r8, r9, r10, r11, lr}
 	
 	/* switch to process stack pointer */
 	msr psp, r0
