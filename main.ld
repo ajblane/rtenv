@@ -15,8 +15,8 @@ SECTIONS
  		*(.text.*)
 		*(.rodata)
 		*(.rodata*)
-                
-                user_program_start = ALIGN(0x4);
+          
+                user_program_start = .; 
                 KEEP(*(.user_program))
                 user_program_end = .;
 		_sidata = .;   

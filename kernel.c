@@ -685,7 +685,14 @@ void exe_user_program(int argc, char *argv[])
 {
    int (*user_program)();
    int result=0;
-   user_program = &user_program_start; 
+   /*user_program = &user_program_start + 1; */
+   asm volatile (
+       "add %0, %1 , #1\n"
+       :"=r" (user_program)
+       :"r" (&user_program_start)
+       : "%0"
+   );
+   
    result = user_program(); 
    
 }
