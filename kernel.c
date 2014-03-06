@@ -814,7 +814,7 @@ void first()
 	if (!fork()) setpriority(0, 0), serialin(USART2, USART2_IRQn);
 	if (!fork()) rs232_xmit_msg_task();
 	if (!fork()) setpriority(0, PRIORITY_DEFAULT - 10), serial_test_task();
-
+        if (!fork()) setpriority(0,2),exit(1);
 	setpriority(0, PRIORITY_LIMIT);
 
 	while(1);
@@ -1233,6 +1233,15 @@ int main()
 			if (tasks[current_task].stack->r0 != 0) {
 				tasks[current_task].stack->r0 += tick_count;
 				tasks[current_task].status = TASK_WAIT_TIME;
+			}
+			break;
+		case 0x10:/*exit*/
+			if(tasks[current_task].stack->r0 != 0){
+				if (tasks[current_task].prev)
+					*(tasks[current_task].prev) = tasks[current_task].next;
+				if (tasks[current_task].next)
+					tasks[current_task].next->prev = tasks[current_task].prev;
+			    task_count--;
 			}
 			break;
 		default: /* Catch all interrupts */
