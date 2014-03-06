@@ -693,7 +693,10 @@ void exe_user_program(int argc, char *argv[])
        : "%0"
    );
    
-   result = user_program(); 
+   if(!fork()){
+       result = user_program(); 
+       exit(1);	
+   }
    
 }
 
@@ -814,7 +817,7 @@ void first()
 	if (!fork()) setpriority(0, 0), serialin(USART2, USART2_IRQn);
 	if (!fork()) rs232_xmit_msg_task();
 	if (!fork()) setpriority(0, PRIORITY_DEFAULT - 10), serial_test_task();
-        if (!fork()) setpriority(0,2),exit(1);
+
 	setpriority(0, PRIORITY_LIMIT);
 
 	while(1);
