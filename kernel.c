@@ -162,8 +162,9 @@ struct user_thread_stack {
 	unsigned int ip;
 	unsigned int lr;	/* Back to user thread code */
 	unsigned int pc;
-	unsigned int xpsr;
-	unsigned int stack[STACK_SIZE - 18];
+	unsigned int xpsr; /*<---- sp*/
+	unsigned int sp;
+	unsigned int stack[STACK_SIZE - 19];
 };
 
 /* Task Control Block */
@@ -692,11 +693,13 @@ void exe_user_program(int argc, char *argv[])
        :"r" (&user_program_start)
        : "%0"
    );
-   
+   result = fork();
+   /*  
    if(!fork()){
        result = user_program(); 
        exit(1);	
    }
+   */
    
 }
 
@@ -1163,11 +1166,21 @@ int main()
 			}
 			else {
 				/* Compute how much of the stack is used */
-				size_t used = stacks[current_task] + STACK_SIZE
+				size_t used;
+				if(tasks[current_task].stack >= stacks[current_task] && tasks[current_task].stack < stacks[current_task] + 512){
+					
+				 	used = stacks[current_task] + STACK_SIZE
 					      - (unsigned int*)tasks[current_task].stack;
-				/* New stack is END - used */
+					/* New stack is END - used */
+				}
+				else{
+	
+					 used = tasks[current_task].stack->sp - (unsigned int)tasks[current_task].stack;
+					
+				}
+				
 				tasks[task_count].stack = (void*)(stacks[task_count] + STACK_SIZE - used);
-				/* Copy only the used part of the stack */
+				/** Copy only the used part of the stack */
 				memcpy(tasks[task_count].stack, tasks[current_task].stack,
 				       used * sizeof(unsigned int));
 				/* Set PID */

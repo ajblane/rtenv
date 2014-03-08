@@ -6,9 +6,12 @@
 .global fork
 fork:
 	push {r7}
+	mrs r7 , psp
+	push {r7} 
 	mov r7, #0x1
 	svc 0
 	nop
+	pop {r7}
 	pop {r7}
 	bx lr
 .global getpid
