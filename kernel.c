@@ -694,12 +694,11 @@ void exe_user_program(int argc, char *argv[])
        : "%0"
    );
    result = fork();
-   /*  
-   if(!fork()){
+   if(result == 0){
        result = user_program(); 
        exit(1);	
    }
-   */
+   
    
 }
 
@@ -1253,11 +1252,9 @@ int main()
 			break;
 		case 0x10:/*exit*/
 			if(tasks[current_task].stack->r0 != 0){
-				if (tasks[current_task].prev)
-					*(tasks[current_task].prev) = tasks[current_task].next;
-				if (tasks[current_task].next)
-					tasks[current_task].next->prev = tasks[current_task].prev;
-			    task_count--;
+				task_count--;
+				current_task--;
+				tasks[current_task].status = TASK_READY;
 			}
 			break;
 		default: /* Catch all interrupts */
