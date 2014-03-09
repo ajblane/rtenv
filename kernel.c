@@ -1174,12 +1174,12 @@ int main()
 				}
 				else{
 	
-					 used = tasks[current_task].stack->sp - (unsigned int)tasks[current_task].stack;
+					 used = (unsigned int *)tasks[current_task].stack->sp - (unsigned int*)tasks[current_task].stack;
 					
 				}
 				
 				tasks[task_count].stack = (void*)(stacks[task_count] + STACK_SIZE - used);
-				/** Copy only the used part of the stack */
+				/* Copy only the used part of the stack */
 				memcpy(tasks[task_count].stack, tasks[current_task].stack,
 				       used * sizeof(unsigned int));
 				/* Set PID */
